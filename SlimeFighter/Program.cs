@@ -112,28 +112,31 @@ namespace SlimeQuest
             Console.Clear();
             DisplayGameScreen();
             DisplayTextBoxPlayer();
-            int action = 0;
+            int action;
             Console.CursorVisible = true;
-            Console.SetCursorPosition(27, 33);
+            Console.SetCursorPosition(29, 33);
             Console.Write($" 1  Attack");
-            Console.SetCursorPosition(40, 33);
+            Console.SetCursorPosition(50, 33);
             Console.Write($"{player.Name} : {player.Health}");
-            Console.SetCursorPosition(27, 34);
+            Console.SetCursorPosition(29, 34);
             Console.Write($" 2  Defend");
-            Console.SetCursorPosition(40, 34);
-            Console.Write("Slime:{slime.Health}");
+            Console.SetCursorPosition(50, 34);
+            Console.Write($"Slime:{slime.Health}");
             if (player.AllyPresent)
             {
-                Console.SetCursorPosition(27, 35);
+                Console.SetCursorPosition(29, 35);
                 Console.WriteLine($"| 3  Ally");
             }
-            Console.SetCursorPosition(30, 36);
-            Console.WriteLine("Gold:" + player.Gold);
+            Console.SetCursorPosition(34, 36);
+            Console.WriteLine("Gold: " + player.Gold);
 
+            int tOb = 33;
+            int tObLast = 33;
             ConsoleKeyInfo keyPress;
             bool optionSelected = false;
-            Console.CursorVisible = false;
-            Console.SetCursorPosition(52, 25);
+            Console.CursorVisible = true;
+            action = 1;
+            Console.SetCursorPosition(26, 33);
             Console.Write("->");
             while (!optionSelected)
             {
@@ -141,26 +144,55 @@ namespace SlimeQuest
 
                 if (keyPress.Key == ConsoleKey.UpArrow)
                 {
-                    Console.SetCursorPosition(52, 27);
-                    Console.Write("  ");
-                    Console.SetCursorPosition(52, 25);
-                    Console.Write("->");
-                    if (action > 1)
+
+                    if (action == 1)
                     {
-                        action = action + 1;
+
                     }
+                    else if (action == 2)
+                    {
+                        action--;
+                        tOb--;
+                    }
+                    else if (action == 3)
+                    {
+                        action--;
+                        tOb--;
+                    }
+
+                    Console.SetCursorPosition(26, tObLast);
+                    Console.Write("  ");
+                    Console.SetCursorPosition(26, tOb);
+                    Console.Write("->");
+                    tObLast = tOb;
                 }
                 if (keyPress.Key == ConsoleKey.DownArrow)
                 {
-                    
-                    if (action > 1)
+
+                    if (action == 1)
                     {
-                        action = action + 1;
-                        Console.SetCursorPosition(52, 25);
-                        Console.Write("  ");
-                        Console.SetCursorPosition(52, 27);
-                        Console.Write("->");
+                        action++;
+                        tOb++;
                     }
+                    if (player.AllyPresent)
+                    {
+                        if (action == 2)
+                        {
+                            action++;
+                            tOb++;
+                        }
+                    }
+                    
+                    else if (action == 3)
+                    {
+                        
+                    }
+
+                    Console.SetCursorPosition(26, tObLast);
+                    Console.Write("  ");
+                    Console.SetCursorPosition(26, tOb);
+                    Console.Write("->");
+                    tObLast = tOb;
                 }
                 if (keyPress.Key == ConsoleKey.Enter)
                 {
@@ -192,7 +224,7 @@ namespace SlimeQuest
             Random random = new Random();
             int attack = random.Next(1, 2);
             int damage = 0;
-
+            Console.SetCursorPosition(29, 33);
             //If else statement to handle what happens next
             if (attack == 1)
             {
@@ -200,26 +232,30 @@ namespace SlimeQuest
 
                 Thread.Sleep(2000);
                 damage = random.Next(1, slime.Damage);
-                Console.WriteLine();
-                Console.WriteLine($"The slime deals {damage} damage.");
-                Thread.Sleep(1000);
-
-
-                Console.WriteLine($"You took {damage} damage!");
                 Thread.Sleep(1000);
             }
             else if (attack == 2)
             {
                 Console.WriteLine("The slime jumps at you and lands on your foot...");
+                Thread.Sleep(1000);
                 Console.WriteLine("...");
                 //SlimeType
-                Console.WriteLine("You took 1 damage...");
-                Thread.Sleep(2000);
-                Console.WriteLine("\n\n");
+                Thread.Sleep(1000);
             }
             else { Console.WriteLine("Error: No attack defined..."); }
+            Console.SetCursorPosition(29, 34);
+            if (player.Defending)
+            {
+                Console.WriteLine("You blocked the attack!");
+                player.Defending = false;
+            }
+            else
+            {
+                Console.WriteLine($"The slime deals {damage} damage.");
+                player.Health = player.Health - damage;
 
-            player.Health = player.Health - damage;
+            }
+            
         }
 
 
@@ -232,16 +268,21 @@ namespace SlimeQuest
             //Some setup
             Random random = new Random();
             int slimePassive = random.Next(1, 4);
-            string fight;
-
-            Console.Clear();
+            bool fight = false;
+            SlimeAndChatColor(slime);
+            Console.SetCursorPosition(29, 33);
             //The chances to happen
+
             if (slimePassive == 1) { Console.WriteLine("The slime slides around in a circle"); }
+
             else if (slimePassive == 2)
             {
                 Console.WriteLine("The slime lunges at you but misses...");
                 Console.WriteLine();
+
+                Console.SetCursorPosition(29, 34);
                 Thread.Sleep(1000);
+
                 Console.WriteLine("It seems to want to play");
                 Console.WriteLine();
                 Thread.Sleep(2000);
@@ -250,20 +291,63 @@ namespace SlimeQuest
             {
                 Console.WriteLine("The slime jiggles it's body");
                 Thread.Sleep(1000);
+                Console.SetCursorPosition(29, 34);
                 Console.WriteLine("It seems to be taunting you");
                 Console.WriteLine();
             }
             else
             {
-                Console.WriteLine();
-                Console.WriteLine("\n\n");
-                Console.WriteLine();
-            }
-            Console.WriteLine("Would you like to fight the slime minding its own buisness?");
-            fight = Console.ReadLine();
-            if (fight == "yes") { BattleLoop(player, slime); }
-            else if (fight == "no") { Console.WriteLine("You chose not to attack"); }
 
+            }
+            Thread.Sleep(4000);
+            Console.Clear();
+            DisplayGameScreen();
+            DisplayTextBoxPlayer();
+            Console.SetCursorPosition(29, 33);
+            Console.WriteLine("Would you like to fight the slime minding its own buisness?");
+            
+            
+            ConsoleKeyInfo keyPress;
+            bool optionSelected = false;
+            Console.CursorVisible = false;
+            //Options
+            Console.SetCursorPosition(29, 33);
+            Console.Write("Yes");
+            Console.SetCursorPosition(29, 33);
+            Console.Write("No");
+
+
+            Console.SetCursorPosition(26, 33);
+            Console.Write("->");
+            while (!optionSelected)
+            {
+                keyPress = Console.ReadKey();
+
+                if (keyPress.Key == ConsoleKey.UpArrow)
+                {
+                    Console.SetCursorPosition(26, 34);
+                    Console.Write("  ");
+                    Console.SetCursorPosition(26, 33);
+                    Console.Write("->");
+                    fight = true;
+
+                }
+                if (keyPress.Key == ConsoleKey.DownArrow)
+                {
+                    Console.SetCursorPosition(26, 33);
+                    Console.Write("  ");
+                    Console.SetCursorPosition(26, 34);
+                    Console.Write("->");
+                    fight = false;
+                }
+                if (keyPress.Key == ConsoleKey.Enter)
+                {
+                    optionSelected = true;
+                }
+
+            }
+            if (fight) { BattleLoop(player, slime); }
+            else if (fight) { Console.WriteLine("You continue on"); }
         }
 
         //#------------------------------The actual game--------------------------
