@@ -11,49 +11,27 @@ namespace SlimeQuest
         private string _name;
         private int _health;
         private int _damage;
-        private int _allyDamage;
-        private bool _allyPresent;
-        private string _ally;
         private int _gold;
         private bool _defending;
+        private bool _pinkCharm;
+        private string _allyEffect;
+        private string _allyName;
+
+
+
 
 
         #region Properties
-
-        public bool Defending
-        {
-            get { return _defending; }
-            set { _defending = value; }
-        }
-
-        public bool AllyPresent
-        {
-            get { return _allyPresent; }
-            set { _allyPresent = value; }
-        }
-
-        public string Ally
-        {
-            get { return _ally; }
-            set { _ally = value; }
-        }
-
-        public int Gold
-        {
-            get { return _gold; }
-            set { _gold = value; }
-        }
-
-        public int AllyDamage
-        {
-            get { return _allyDamage; }
-            set { _allyDamage = value; }
-        }
-
         public string Name
         {
             get { return _name; }
             set { _name = value; }
+        }
+
+        public int Health
+        {
+            get { return _health; }
+            set { _health = value; }
         }
 
         public int Damage
@@ -62,11 +40,41 @@ namespace SlimeQuest
             set { _damage = value; }
         }
 
-        public int Health
+        public int Gold
         {
-            get { return _health; }
-            set { _health = value; }
+            get { return _gold; }
+            set { _gold = value; }
         }
+
+        public bool Defending
+        {
+            get { return _defending; }
+            set { _defending = value; }
+        }
+
+        public bool PinkCharm
+        {
+            get { return _pinkCharm; }
+            set { _pinkCharm = value; }
+        }
+
+        public string AllyName
+        {
+            get { return _allyName; }
+            set { _allyName = value; }
+        }
+
+        public string AllyEffect
+        {
+            get { return _allyEffect; }
+            set { _allyEffect = value; }
+        }
+
+
+        
+
+        
+        
         #endregion
     }
 }

@@ -9,10 +9,13 @@ namespace SlimeQuest
     class Slime
     {
 
-        static string _color;
-        static int _health;
-        static int _damage;
-        static bool _passive;
+        private string _color;
+        private int _health;
+        private int _damage;
+        private bool _passive;
+        private bool _king;
+        private bool _pinkCharm;
+        private bool _pinkEncounter;
 
         #region Properties
 
@@ -38,6 +41,24 @@ namespace SlimeQuest
         {
             get { return _damage; }
             set { _damage = value; }
+        }
+
+        public bool KingSlime
+        {
+            get { return _king; }
+            set { _king = value; }
+        }
+
+        public bool PinkCharmAlly
+        {
+            get { return _pinkCharm; }
+            set { _pinkCharm = value; }
+        }
+
+        public bool PinkSlimeDisabler
+        {
+            get { return _pinkEncounter; }
+            set { _pinkEncounter = value; }
         }
 
         #endregion
