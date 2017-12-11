@@ -441,7 +441,6 @@ namespace SlimeQuest
                 Thread.Sleep(2000);
                 if (slimechance == 1)
                 {
-                    DisplaySlime();
                     Console.Write("A slime Attacks!");
                     Thread.Sleep(1000);
                     InitializeNewSlime(slime, false, player);
