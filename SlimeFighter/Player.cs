@@ -16,7 +16,7 @@ namespace SlimeQuest
         private bool _pinkCharm;
         private string _allyEffect;
         private string _allyName;
-
+        private bool _allyPresent;
 
 
 
@@ -70,7 +70,11 @@ namespace SlimeQuest
             set { _allyEffect = value; }
         }
 
-
+        public bool AllyPresent
+        {
+            get { return _allyPresent; }
+            set { _allyPresent = value; }
+        }
         
 
         
