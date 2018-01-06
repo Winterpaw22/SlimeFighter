@@ -14,8 +14,8 @@ namespace SlimeQuest
         private int _damage;
         private bool _passive;
         private bool _king;
-        private bool _pinkCharm;
-        private bool _pinkEncounter;
+        private bool _charm;
+        private bool _encounter;
 
         #region Properties
 
@@ -49,16 +49,16 @@ namespace SlimeQuest
             set { _king = value; }
         }
 
-        public bool PinkCharmAlly
+        public bool AllyCharm
         {
-            get { return _pinkCharm; }
-            set { _pinkCharm = value; }
+            get { return _charm; }
+            set { _charm = value; }
         }
 
-        public bool PinkSlimeDisabler
+        public bool AllyDisabler
         {
-            get { return _pinkEncounter; }
-            set { _pinkEncounter = value; }
+            get { return _encounter; }
+            set { _encounter = value; }
         }
 
         #endregion

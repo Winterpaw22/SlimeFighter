@@ -10,15 +10,11 @@ namespace SlimeQuest
     {
         private string _name;
         private int _health;
-        private int _damage;
+        private int[] _damage;
         private int _gold;
-        private bool _defending;
-        private bool _pinkCharm;
-        private string _allyEffect;
-        private string _allyName;
-        private bool _allyPresent;
-
-
+        private int _exp;
+        
+        
 
 
         #region Properties
@@ -34,7 +30,7 @@ namespace SlimeQuest
             set { _health = value; }
         }
 
-        public int Damage
+        public int[] Damage
         {
             get { return _damage; }
             set { _damage = value; }
@@ -46,39 +42,15 @@ namespace SlimeQuest
             set { _gold = value; }
         }
 
-        public bool Defending
+
+        public int Experience
         {
-            get { return _defending; }
-            set { _defending = value; }
+            get { return _exp; }
+            set { _exp = value; }
         }
 
-        public bool PinkCharm
-        {
-            get { return _pinkCharm; }
-            set { _pinkCharm = value; }
-        }
 
-        public string AllyName
-        {
-            get { return _allyName; }
-            set { _allyName = value; }
-        }
 
-        public string AllyEffect
-        {
-            get { return _allyEffect; }
-            set { _allyEffect = value; }
-        }
-
-        public bool AllyPresent
-        {
-            get { return _allyPresent; }
-            set { _allyPresent = value; }
-        }
-        
-
-        
-        
         #endregion
     }
 }

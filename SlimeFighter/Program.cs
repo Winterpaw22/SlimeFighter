@@ -30,6 +30,7 @@ namespace SlimeQuest
             {
                 Slime slime = new Slime();
                 Player player = new Player();
+                Ally ally = new Ally();
                 // programmer: John Sabins
                 // Program: Slime Fighter
                 Console.Clear();
@@ -92,7 +93,7 @@ namespace SlimeQuest
                 Console.SetCursorPosition(27, 33);
                 Console.Write("that you see no end to...");
                 Thread.Sleep(2000);
-                playTheGame = GameLoop(player, slime);
+                playTheGame = GameLoop(player, slime, ally);
             }
 
             if (playTheGame == 2) { Console.SetCursorPosition(55, 16); Console.WriteLine("Thanks for playing"); Thread.Sleep(2500); }
@@ -112,10 +113,39 @@ namespace SlimeQuest
         {
             player.Name = playerName;
             player.Health = 100;
-            player.Damage = 7;
+            player.Damage = new int[2];
+            player.Damage[0] = 1;
+            player.Damage[1] = 7;
+            player.Experience = 0;
         }
 
-        static void InitializeNewSlime(Slime slime, bool passive, Player player)
+        private void InitializeAlly(Ally ally, string charm)
+        {
+            ally.Active = true;
+            ally.Name = NameChecker();
+            ally.Charm = true;
+            ally.Type = Ally.Effect.REGENERATION;
+            ally.Name = NameChecker();
+        }
+
+        public string NameChecker()
+        {
+            bool noName = true;
+            string name = "";
+            while (noName)
+            {
+                Console.SetCursorPosition(27, 33);
+                Console.Write("What would you like to name your new ally: ");
+                name = Console.ReadLine();
+                if (name.Length >= 3) { noName = false; }
+                ClearPlayerTextBox();
+                Console.SetCursorPosition(27, 34);
+                Console.Write("Please use a name longer than 3 letters");
+            }
+            return name;
+        }
+
+        static void InitializeNewSlime(Slime slime, bool passive, Player player, Ally ally)
         {
             //A random system to handle the slime
             Random random = new Random();
@@ -126,30 +156,30 @@ namespace SlimeQuest
                 slime.Health = 20;
                 slime.Damage = 2;
                 slime.Color = "green";
-                slime.PinkCharmAlly = false;
+                slime.AllyCharm = false;
             }
             else if (slimeType == 2)
             {
                 slime.Health = 30;
                 slime.Damage = 4;
                 slime.Color = "blue";
-                slime.PinkCharmAlly = false;
+                slime.AllyCharm = false;
             }
             else if (slimeType == 3)
             {
                 slime.Health = 20;
                 slime.Damage = 5;
                 slime.Color = "red";
-                slime.PinkCharmAlly = false;
+                slime.AllyCharm = false;
             }
             else if (slimeType == 4)
             {
-                if (!player.AllyPresent)
+                if (ally.Active)
                 {
                     slime.Health = 45;
                     slime.Damage = 3;
                     slime.Color = "pink";
-                    slime.PinkCharmAlly = true;
+                    slime.AllyCharm = true;
                 }
 
             }
@@ -159,12 +189,12 @@ namespace SlimeQuest
                 slime.Health = 10;
                 slime.Damage = 1;
                 slime.Color = "pine";
-                slime.PinkCharmAlly = false;
+                slime.AllyCharm = false;
 
             }
             if (slime.KingSlime)
             {
-                slime.PinkCharmAlly = false;
+                slime.AllyCharm = false;
                 slime.Health = 55;
                 slime.Damage = 10;
                 slime.Color = "purple";
@@ -174,7 +204,7 @@ namespace SlimeQuest
         }
         //-----------------------------Player Menu-------------------------------
 
-        static void Player(Player player, Slime slime)
+        static void Player(Player player, Slime slime,Ally ally)
         {
             Random random = new Random();
             int damage = 1;
@@ -195,7 +225,7 @@ namespace SlimeQuest
             Console.SetCursorPosition(50, 34);
 
             Console.Write($"Slime:{slime.Health}");
-            if (player.PinkCharm)
+            if (ally.Charm)
             {
                 Console.SetCursorPosition(29, 35);
                 Console.WriteLine($" 3  Ally");
@@ -242,7 +272,7 @@ namespace SlimeQuest
                         tOb++;
                     }
 
-                    if (player.AllyPresent)
+                    if (ally.Active)
                     {
                         if (action == 2)
                         {
@@ -271,20 +301,20 @@ namespace SlimeQuest
             ClearPlayerTextBox();
             if (action == 1)
             {
-                damage = random.Next(1,player.Damage);
+                damage = random.Next(player.Damage[0], player.Damage[1]);
                 //switch to visual effects (NOT DONE)
                 Console.SetCursorPosition(27, 33);
                 Console.Write($"You slash your sword at the slime and deal {damage} damage!");
                 Thread.Sleep(1000);
                 slime.Health = slime.Health - damage;
             }
-            else if (action == 2) { player.Defending = true; }
+            //else if (action == 2) { player.Defending = true; }
             else if (action == 3)
             {
                 int healAmt = random.Next(2,10);
                 player.Health = player.Health + healAmt;
                 Console.SetCursorPosition(27, 33);
-                Console.Write($"You let {player.AllyName} heal you.");
+                Console.Write($"You let {ally.Name} heal you.");
                 Console.SetCursorPosition(27, 34);
                 Console.Write($"You healed for {healAmt} health!");
             }
@@ -320,32 +350,32 @@ namespace SlimeQuest
                 Thread.Sleep(1000);
             }
             else { Console.WriteLine("Error: No attack defined..."); }
-            Console.SetCursorPosition(27, 35);
-            if (player.Defending)
-            {
-                Console.WriteLine("You blocked the attack!");
-                player.Defending = false;
-            }
-            else
-            {
-                Console.WriteLine($"The slime deals {damage} damage.");
-                player.Health = player.Health - damage;
+            //Console.SetCursorPosition(27, 35);
+            //if ()
+            //{
+            //    Console.WriteLine("You blocked the attack!");
+            //    player.Defending = false;
+            //}
+            //else
+            //{
+            //    Console.WriteLine($"The slime deals {damage} damage.");
+            //    player.Health = player.Health - damage;
 
-            }
+            //}
             Thread.Sleep(1500);
             
         }
 
         //-----------------------------Slime PASSIVE-------------------------------------
 
-        static void SlimePassive(Player player, Slime slime)
+        static void SlimePassive(Player player, Slime slime, Ally ally)
         {
 
             //Some setup
             DisplayGameScreen();
             DisplayTextBoxPlayer();
             SlimeAndChatColor(slime);
-            DisplaySlime();
+            DisplaySlime(slime);
             Random random = new Random();
             int slimePassive = random.Next(1, 4);
             bool fight = false;
@@ -434,14 +464,14 @@ namespace SlimeQuest
             ClearPlayerTextBox();
 
             Console.SetCursorPosition(27, 33);
-            if (fight) { BattleLoop(player, slime); }
+            if (fight) { BattleLoop(player, slime, ally); }
             else if (!fight) { Console.Write("You continue on..."); }
             Thread.Sleep(2000);
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         //#------------------------------The actual game--------------------------
-        static int GameLoop(Player player, Slime slime)
+        static int GameLoop(Player player, Slime slime, Ally ally)
         {
             DisplayTextBoxPlayer();
             Random random = new Random();
@@ -468,8 +498,10 @@ namespace SlimeQuest
                 {
                     Console.Write("A slime Attacks!");
                     Thread.Sleep(1000);
-                    InitializeNewSlime(slime, false, player);
-                    BattleLoop(player, slime);
+                    
+                    InitializeNewSlime(slime, false, player,ally);
+                    DisplaySlime(slime);
+                    BattleLoop(player, slime, ally);
                     nothing = 0;
 
                 }
@@ -477,10 +509,11 @@ namespace SlimeQuest
                 {
 
                     Thread.Sleep(2000);
-                    InitializeNewSlime(slime, true, player);
+                    InitializeNewSlime(slime, true, player, ally);
                     Console.Write($"You have spotted a {slime.Color} slime minding its own buisness");
                     Thread.Sleep(1000);
-                    SlimePassive(player, slime);
+                    DisplaySlime(slime);
+                    SlimePassive(player, slime, ally);
                     nothing = 0;
                 }
 
@@ -499,7 +532,7 @@ namespace SlimeQuest
                 if (nothing > 5)
                 {
                     Console.WriteLine("A slime dropped onto your head and suprized you");
-                    BattleLoop(player, slime);
+                    BattleLoop(player, slime, ally);
                     nothing = 0;
                 }
                 if (KingEncounter > 20)
@@ -520,9 +553,9 @@ namespace SlimeQuest
                     Console.Write("a powerful presence.");
                     DisplayContinuePrompt(103, 38);
                     slime.KingSlime = true;
-                    InitializeNewSlime(slime, false, player);
+                    InitializeNewSlime(slime, false, player, ally);
                     
-                    BattleLoop(player, slime);
+                    BattleLoop(player, slime, ally);
                     kingKilled = true;
                     end = 3;
                 }
@@ -535,7 +568,7 @@ namespace SlimeQuest
             return end;
         }
 
-        static void BattleLoop(Player player, Slime slime)
+        static void BattleLoop(Player player, Slime slime, Ally ally)
         {
             Random random = new Random();
             do
@@ -547,14 +580,18 @@ namespace SlimeQuest
                 }
                 else
                 {
-                    DisplaySlime();
+                    DisplaySlime(slime);
                 }
                 SlimeAndChatColor(slime);
 
-                Player(player, slime);
+                Player(player, slime, ally);
                 Thread.Sleep(1000);
                 ClearPlayerTextBox();
-                SlimeATK(player, slime);
+                if (slime.Health > 0)
+                {
+                    SlimeATK(player, slime);
+                }
+                
 
             } while ((player.Health > 0) && (slime.Health > 0));
 
@@ -572,7 +609,7 @@ namespace SlimeQuest
             }
             Console.SetCursorPosition(27, 33);
             Console.WriteLine($"You have succeeded in battle and have recieved {goldDrop} Gold!");
-            if (slime.PinkCharmAlly)
+            if (slime.AllyCharm)
             {
                 Console.SetCursorPosition(27,34);
                 Console.Write("You picked up a Slime charm... You put it aroudn your neck.");
@@ -589,22 +626,7 @@ namespace SlimeQuest
                 player.Health = player.Health + 5;
                 DisplayContinuePrompt(103, 38);
                 ClearPlayerTextBox();
-                string name = "Christi";
-                bool allyUnamed = true;
-                while (allyUnamed)
-                {
-                    Console.SetCursorPosition(27, 33);
-                    Console.Write("What would you like to name your new ally: ");
-                    name = Console.ReadLine();
-                    if (name.Length >= 3) { allyUnamed = false; }
-                    ClearPlayerTextBox();
-                    Console.SetCursorPosition(27, 34);
-                    Console.Write("Please use a name longer than 3 letters");
-                }
-                player.PinkCharm = true;
-                player.AllyPresent = true;
-                player.AllyEffect = "healing";
-                player.AllyName = name;
+
             }
             Console.ForegroundColor = ConsoleColor.Gray;
             player.Gold = player.Gold + goldDrop;
@@ -800,9 +822,9 @@ namespace SlimeQuest
             #endregion
         }
 
-        static private void DisplaySlime()
+        static private void DisplaySlime(Slime slime)
         {
-
+            SlimeAndChatColor(slime);
             Console.SetCursorPosition(35, 16);
             Console.Write("                      =======                             ");
             Console.SetCursorPosition(35, 17);
@@ -823,6 +845,7 @@ namespace SlimeQuest
             Console.Write("            ====-               -====                     ");
             Console.SetCursorPosition(35, 25);
             Console.Write("                 ==============                           ");
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         static private void DisplayKingSlime()
