@@ -119,16 +119,31 @@ namespace SlimeQuest
             player.Experience = 0;
         }
 
-        private void InitializeAlly(Ally ally, string charm)
+        static void InitializeAlly(Ally ally, Slime slime, Player player)
         {
             ally.Active = true;
             ally.Name = NameChecker();
-            ally.Charm = true;
+            switch (ally.Charm)
+            {
+                case Ally.Charms.REDCHARM:
+                    ally.Type = Ally.Effect.FIRE;
+                    break;
+                case Ally.Charms.BLUECHARM:
+                    ally.Type = Ally.Effect.SHARPEN;
+                    break;
+                case Ally.Charms.PINKCHARM:
+                    ally.Type = Ally.Effect.REGENERATION;
+                    break;
+                case Ally.Charms.GREENCHARM:
+                    break;
+                default:
+                    break;
+            }
             ally.Type = Ally.Effect.REGENERATION;
             ally.Name = NameChecker();
         }
 
-        public string NameChecker()
+        static string NameChecker()
         {
             bool noName = true;
             string name = "";
@@ -150,56 +165,90 @@ namespace SlimeQuest
             //A random system to handle the slime
             Random random = new Random();
             int slimeType = random.Next(1, 5);
+            int charmChance = random.Next(1, 10);
 
+            //Green Slime Builder
             if (slimeType == 1)
             {
                 slime.Health = 20;
                 slime.Damage = 2;
                 slime.Color = "green";
-                slime.AllyCharm = false;
+                
+                if (charmChance < 5 && ally.Active)
+                {
+                    ally.Charm = Ally.Charms.GREENCHARM;
+                    slime.HasCharm = true;
+                }
+                else slime.HasCharm = false;
             }
+            //Red Slime Builder
             else if (slimeType == 2)
-            {
-                slime.Health = 30;
-                slime.Damage = 4;
-                slime.Color = "blue";
-                slime.AllyCharm = false;
-            }
-            else if (slimeType == 3)
             {
                 slime.Health = 20;
                 slime.Damage = 5;
                 slime.Color = "red";
-                slime.AllyCharm = false;
+
+                if (charmChance < 5 && ally.Active)
+                {
+                    ally.Charm = Ally.Charms.REDCHARM;
+                    slime.HasCharm = true;
+                }
+                else slime.HasCharm = false;
             }
+            //Blue Slime Builder
+            else if (slimeType == 3)
+            {
+                slime.Health = 30;
+                slime.Damage = 4;
+                slime.Color = "blue";
+
+                if (charmChance < 5 && ally.Active)
+                {
+                    ally.Charm = Ally.Charms.BLUECHARM;
+                    slime.HasCharm = true;
+                }
+                else slime.HasCharm = false;
+            }
+            //Pink Slime Builder
             else if (slimeType == 4)
             {
-                if (ally.Active)
+                slime.Health = 45;
+                slime.Damage = 3;
+                slime.Color = "pink";
+
+                if (charmChance < 5 && ally.Active)
                 {
-                    slime.Health = 45;
-                    slime.Damage = 3;
-                    slime.Color = "pink";
-                    slime.AllyCharm = true;
+                    ally.Charm = Ally.Charms.PINKCHARM;
+                    slime.HasCharm = true;
                 }
+                else slime.HasCharm = false;
 
             }
+            //Pine Slime Builder
             else
             {
                 //just in case something goes wrong a slime is still initialized, although a weak one
                 slime.Health = 10;
                 slime.Damage = 1;
                 slime.Color = "pine";
-                slime.AllyCharm = false;
+                slime.HasCharm = false;
 
             }
+            //King Slime builder
             if (slime.KingSlime)
             {
-                slime.AllyCharm = false;
+                slime.HasCharm = false;
                 slime.Health = 55;
                 slime.Damage = 10;
                 slime.Color = "purple";
+                //if (charmChance < 5 && ally.Active)
+                //{
+                //    ally.Charm = Ally.Charms.GREENCHARM;
+                //    slime.HasCharm = true;
+                //}
+                //else slime.HasCharm = false;
             }
-            slime.Passive = passive;
+
 
         }
         //-----------------------------Player Menu-------------------------------
@@ -225,13 +274,15 @@ namespace SlimeQuest
             Console.SetCursorPosition(50, 34);
 
             Console.Write($"Slime:{slime.Health}");
-            if (ally.Charm)
+            if (ally.Active)
             {
                 Console.SetCursorPosition(29, 35);
                 Console.WriteLine($" 3  Ally");
             }
             Console.SetCursorPosition(34, 36);
             Console.WriteLine("Gold: " + player.Gold);
+            Console.SetCursorPosition(34, 37);
+            Console.WriteLine("Experience: " + player.Experience);
 
             int tOb = 33;
             int tObLast = 33;
@@ -595,34 +646,75 @@ namespace SlimeQuest
 
             } while ((player.Health > 0) && (slime.Health > 0));
 
+            
+            
             ClearPlayerTextBox();
             Console.ForegroundColor = ConsoleColor.Yellow;
+            #region Gold and Experience
             int goldDrop;
-
+            int exp;
             if (slime.KingSlime)
             {
-                goldDrop = random.Next(5, 20);
+                goldDrop = random.Next(60, 100);
+                exp = random.Next(200,500);
+            }
+            else if (slime.Color == "red")
+            {
+                goldDrop = random.Next(20,30);
+                exp = random.Next(100, 150);
+            }
+            else if (slime.Color == "blue")
+            {
+                goldDrop = random.Next(10, 15);
+                exp = random.Next(60, 100);
+            }
+            else if (slime.Color == "green")
+            {
+                goldDrop = random.Next(4, 7);
+                exp = random.Next(20, 60);
             }
             else
             {
-                goldDrop = random.Next(2, 10);
+                goldDrop = random.Next(2, 5);
+                exp = random.Next(2, 30);
             }
             Console.SetCursorPosition(27, 33);
-            Console.WriteLine($"You have succeeded in battle and have recieved {goldDrop} Gold!");
-            if (slime.AllyCharm)
+            Console.Write($"You have succeeded in battle and have recieved {goldDrop} Gold!");
+            Console.SetCursorPosition(27,34);
+            Console.Write($"You gained {exp} Experience Points!");
+            #endregion
+
+            
+
+            if (slime.HasCharm)
             {
+                InitializeAlly(ally, slime, player);
                 Console.SetCursorPosition(27,34);
-                Console.Write("You picked up a Slime charm... You put it aroudn your neck.");
+                Console.Write("You picked up a Slime charm... You put it around your neck.");
                 Thread.Sleep(1000);
                 Console.SetCursorPosition(27, 35);
                 Console.Write("A little slime appears next to you and jumps on your head");
                 Thread.Sleep(1000);
-                Console.SetCursorPosition(27, 36);
-                Console.Write("You feel your injuries heal slightly");
-                Thread.Sleep(2500);
-                Console.SetCursorPosition(27, 37);
-                Console.WriteLine("You regained 5 health!");
-                Thread.Sleep(1000);
+                switch (ally.Charm)
+                {
+                    case Ally.Charms.REDCHARM:
+                        break;
+                    case Ally.Charms.BLUECHARM:
+                        break;
+                    case Ally.Charms.PINKCHARM:
+                        Console.SetCursorPosition(27, 36);
+                        Console.Write("You feel your injuries heal slightly");
+                        Thread.Sleep(2500);
+                        Console.SetCursorPosition(27, 37);
+                        Console.WriteLine("You regained 5 health!");
+                        Thread.Sleep(1000);
+                        break;
+                    case Ally.Charms.GREENCHARM:
+                        break;
+                    default:
+                        break;
+                }
+                
                 player.Health = player.Health + 5;
                 DisplayContinuePrompt(103, 38);
                 ClearPlayerTextBox();
