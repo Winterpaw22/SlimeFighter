@@ -10,7 +10,9 @@ namespace SlimeQuest
     {
         private string _name;
         private int _health;
+        private int _maxHealth;
         private int[] _damage;
+        private int _defense;
         private int _gold;
         private int _exp;
         
@@ -29,6 +31,19 @@ namespace SlimeQuest
             get { return _health; }
             set { _health = value; }
         }
+
+        public int MaxHealth
+        {
+            get { return _maxHealth; }
+            set { _maxHealth = value; }
+        }
+
+        public int Defense
+        {
+            get { return _defense; }
+            set { _defense = value; }
+        }
+
 
         public int[] Damage
         {

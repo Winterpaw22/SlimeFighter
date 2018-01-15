@@ -113,6 +113,8 @@ namespace SlimeQuest
         {
             player.Name = playerName;
             player.Health = 100;
+            player.MaxHealth = 100;
+            player.Defense = 5;
             player.Damage = new int[2];
             player.Damage[0] = 1;
             player.Damage[1] = 7;
@@ -160,7 +162,7 @@ namespace SlimeQuest
             return name;
         }
 
-        static void InitializeNewSlime(Slime slime, bool passive, Player player, Ally ally)
+        static void InitializeNewSlime(Slime slime, bool passive, Ally ally)
         {
             //A random system to handle the slime
             Random random = new Random();
@@ -270,7 +272,7 @@ namespace SlimeQuest
             Console.SetCursorPosition(50, 33);
             Console.Write($"{player.Name} : {player.Health}");
             Console.SetCursorPosition(29, 34);
-            Console.Write($" 2  Defend");
+            Console.Write($" 2  Throw a stick");
             Console.SetCursorPosition(50, 34);
 
             Console.Write($"Slime:{slime.Health}");
@@ -359,7 +361,15 @@ namespace SlimeQuest
                 Thread.Sleep(1000);
                 slime.Health = slime.Health - damage;
             }
-            //else if (action == 2) { player.Defending = true; }
+            else if (action == 2)
+            {
+                //switch to visual effects (NOT DONE)
+                Console.SetCursorPosition(27, 33);
+                Console.Write("You throw a stick at the slime for no reason...");
+                Console.SetCursorPosition(27, 33);
+                Console.Write("It did nothing...");
+                Thread.Sleep(1000);
+            }
             else if (action == 3)
             {
                 int healAmt = random.Next(2,10);
@@ -550,7 +560,7 @@ namespace SlimeQuest
                     Console.Write("A slime Attacks!");
                     Thread.Sleep(1000);
                     
-                    InitializeNewSlime(slime, false, player,ally);
+                    InitializeNewSlime(slime, false,ally);
                     DisplaySlime(slime);
                     BattleLoop(player, slime, ally);
                     nothing = 0;
@@ -560,7 +570,7 @@ namespace SlimeQuest
                 {
 
                     Thread.Sleep(2000);
-                    InitializeNewSlime(slime, true, player, ally);
+                    InitializeNewSlime(slime, true, ally);
                     Console.Write($"You have spotted a {slime.Color} slime minding its own buisness");
                     Thread.Sleep(1000);
                     DisplaySlime(slime);
@@ -604,7 +614,7 @@ namespace SlimeQuest
                     Console.Write("a powerful presence.");
                     DisplayContinuePrompt(103, 38);
                     slime.KingSlime = true;
-                    InitializeNewSlime(slime, false, player, ally);
+                    InitializeNewSlime(slime, false, ally);
                     
                     BattleLoop(player, slime, ally);
                     kingKilled = true;
@@ -698,8 +708,20 @@ namespace SlimeQuest
                 switch (ally.Charm)
                 {
                     case Ally.Charms.REDCHARM:
+                        Console.SetCursorPosition(27, 36);
+                        Console.Write("It appears the slime is wielding its own sword");
+                        Thread.Sleep(2500);
+                        Console.SetCursorPosition(27, 37);
+                        Console.WriteLine("The slime fights along side you!");
+                        Thread.Sleep(1000);
                         break;
                     case Ally.Charms.BLUECHARM:
+                        Console.SetCursorPosition(27, 36);
+                        Console.Write("The slime makes a small shield out of its own goo, ");
+                        Thread.Sleep(2500);
+                        Console.SetCursorPosition(27, 37);
+                        Console.WriteLine("It seems to be trying to protect you...");
+                        Thread.Sleep(1000);
                         break;
                     case Ally.Charms.PINKCHARM:
                         Console.SetCursorPosition(27, 36);
@@ -708,14 +730,31 @@ namespace SlimeQuest
                         Console.SetCursorPosition(27, 37);
                         Console.WriteLine("You regained 5 health!");
                         Thread.Sleep(1000);
+                        player.Health = player.Health + 5;
+                        if (player.Health > player.MaxHealth)
+                        {
+                            player.Health = player.MaxHealth;
+                        }
                         break;
                     case Ally.Charms.GREENCHARM:
+                        Console.SetCursorPosition(27, 36);
+                        Console.Write("You start remembering more about your battle");
+                        Thread.Sleep(2500);
+                        Console.SetCursorPosition(27, 37);
+                        Console.WriteLine("Experience boost!");
+                        Thread.Sleep(1000);
                         break;
                     default:
+                        Console.SetCursorPosition(27, 36);
+                        Console.Write("BROKEN ERROR ERROR ERROR ERROR");
+                        Thread.Sleep(2500);
+                        Console.SetCursorPosition(27, 37);
+                        Console.WriteLine("SOME SHIT WENT DOWN NOW FIX OR WAIT A YEAR ");
+                        Thread.Sleep(99999999);
                         break;
                 }
                 
-                player.Health = player.Health + 5;
+                
                 DisplayContinuePrompt(103, 38);
                 ClearPlayerTextBox();
 
@@ -912,6 +951,193 @@ namespace SlimeQuest
             }
 
             #endregion
+        }
+
+        static void LevelUp(Player player)
+        {
+            Console.Clear();
+            DisplayGameScreen();
+            DisplayTextBoxPlayer();
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(44,10);
+            Console.Write("Health : " + player.MaxHealth);// left 54 for end || 57 for + 59 for health
+            Console.SetCursorPosition(44, 12);
+            Console.Write("Defense : " + player.Defense);// 55 for end, || 57 for + 59 for defense
+            Console.SetCursorPosition(44, 14);
+            Console.Write("Damage : " + player.Damage[1]);// left 54 for end || 57 for + 59 for damage
+            //Options Health, Defense, Attack   
+            //These will be added to the max
+            int health = 0;
+            int defense = 0;
+            int damage = 0;
+            int pointsAvlb = 3;
+            //-------------------------------------
+            Random random = new Random();
+            int action;
+            //Origin of tOb is unknown but now im calling it tOb as a reference to a tab. It works so shhhhh
+            //
+            //Cursors current position
+            int tOb = 10;
+            //cursors last position
+            int tObLast = 10;
+            // Option Positions   28 : 17,18,19 
+            ConsoleKeyInfo keyPress;
+            bool optionSelected = false;
+            Console.CursorVisible = true;
+            action = 1;
+            Console.SetCursorPosition(40, 10);
+            Console.Write("->");
+            while (!optionSelected)
+            {
+
+                keyPress = Console.ReadKey();
+                //Movement for cursor tOb
+                #region tOb movement
+                if (keyPress.Key == ConsoleKey.UpArrow)
+                {
+                    
+                    if (action == 2)
+                    {
+                        action--;
+                        tOb--;
+                        tOb--;
+                    }
+                    else if (action == 3)
+                    {
+                        action--;
+                        tOb--;
+                        tOb--;
+                    }
+                    Console.SetCursorPosition(40, tObLast);
+                    Console.Write("  ");
+                    Console.SetCursorPosition(40, tOb);
+                    Console.Write("->");
+                    tObLast = tOb;
+                }
+                if (keyPress.Key == ConsoleKey.DownArrow)
+                {
+                    if (action == 1)
+                    {
+                        action++;
+                        tOb++;
+                        tOb++;
+                    }
+                    else if (action == 2)
+                    {
+                        action++;
+                        tOb++;
+                        tOb++;
+                    }
+
+                    Console.SetCursorPosition(40, tObLast);
+                    Console.Write("  ");
+                    Console.SetCursorPosition(40, tOb);
+                    Console.Write("->");
+                    tObLast = tOb;
+                }
+                #endregion
+
+                if (keyPress.Key == ConsoleKey.RightArrow)
+                {
+                    if (action == 1)
+                    {
+                        if (pointsAvlb > 0)
+                        {
+                            //57 for + 59 for health
+                            health++;
+                            pointsAvlb--;
+                            Console.SetCursorPosition(57,10);
+                            Console.Write("+ " + health);
+                        }
+                    }
+                    if (action == 2)
+                    {
+                        if (pointsAvlb > 0)
+                        {
+                            defense++;
+                            pointsAvlb--;
+                            Console.SetCursorPosition(57, 12);
+                            Console.Write("+ " + defense);
+                        }
+                    }
+                    if (action == 3)
+                    {
+                        if (pointsAvlb > 0)
+                        {
+                            damage++;
+                            pointsAvlb--;
+                            Console.SetCursorPosition(57, 14);
+                            Console.Write("+ " + damage);
+                        }
+                    }
+
+                }
+                if (keyPress.Key == ConsoleKey.LeftArrow)
+                {
+                    if (action == 1)
+                    {
+                        if (pointsAvlb >= 0 && health != 0)
+                        {
+                            health--;
+                            pointsAvlb++;
+                            Console.SetCursorPosition(57, 10);
+                            Console.Write("+ " + health);
+
+                        }
+                        else if (health <= 0)
+                        {
+                            Console.SetCursorPosition(57, 10);
+                            Console.Write("           ");
+                        }
+                    }
+                    if (action == 2)
+                    {
+                        if (pointsAvlb >= 0 && defense != 0)
+                        {
+                            defense--;
+                            pointsAvlb++;
+                            Console.SetCursorPosition(57, 12);
+                            Console.Write("+ " + defense);
+
+                        }
+                        else if (defense <= 0)
+                        {
+                            Console.SetCursorPosition(57, 12);
+                            Console.Write("           ");
+                        }
+                    }
+                    if (action == 3)
+                    {
+                        if (pointsAvlb >= 0 && damage != 0)
+                        {
+                            damage--;
+                            pointsAvlb++;
+                            Console.SetCursorPosition(57, 14);
+                            Console.Write("+ " + damage);
+
+                        }
+                        else if (damage <= 0)
+                        {
+                            Console.SetCursorPosition(57, 14);
+                            Console.Write("           ");
+                        }
+                    }
+                }
+                if (keyPress.Key == ConsoleKey.Enter)
+                {
+                    optionSelected = true;
+                }
+                Console.SetCursorPosition(0,0);
+                Console.Write("health " + health + "| Defense " + defense + "| Damage " + damage + "| Points Available " + pointsAvlb);
+                Console.SetCursorPosition(40, tObLast);
+
+            }
+
+            //applying the stat points to the player
+            player.Health = player.Health + health;
+            player.Defense = player.Defense + defense;
+            player.Damage[1] = player.Damage[1] + damage;
+            player.Damage[0] = player.Damage[0] + damage;
         }
 
         static private void DisplaySlime(Slime slime)
