@@ -34,8 +34,8 @@ namespace SlimeQuest
                 // programmer: John Sabins
                 // Program: Slime Fighter
                 Console.Clear();
-                
-                DisplayTextboxMain();
+
+                ScreenWindows.DisplayTextboxMain();
                 Console.SetCursorPosition(38, 14);
                 Console.CursorVisible = true;
                 bool nameSet = false;
@@ -63,7 +63,7 @@ namespace SlimeQuest
                 #region intro
                 Thread.Sleep(1000);
                 Console.Clear();
-                DisplayTextboxMain();
+                ScreenWindows.DisplayTextboxMain();
                 Console.SetCursorPosition(38, 10);
                 Console.WriteLine($"Welcome, {playername}");
                 Thread.Sleep(1000);
@@ -84,10 +84,14 @@ namespace SlimeQuest
                 Thread.Sleep(1000);
                 #endregion
 
-                DisplayContinuePrompt(90, 17);
+                ScreenWindows.DisplayContinuePrompt(90, 17);
                 //----------------------Define player and attributes-----------
+
+
                 InitializePlayer(player, playername);
-                DisplayTextBoxPlayer();
+
+
+                ScreenWindows.DisplayTextBoxPlayer();
                 Console.SetCursorPosition(27, 32);
                 Console.Write("You enter the cave and start walking down an endless corridor");
                 Console.SetCursorPosition(27, 33);
@@ -99,7 +103,7 @@ namespace SlimeQuest
             if (playTheGame == 2) { Console.SetCursorPosition(55, 16); Console.WriteLine("Thanks for playing"); Thread.Sleep(2500); }
             else if (playTheGame == 3)
             {
-                DisplayTextboxMain();
+                ScreenWindows.DisplayTextboxMain();
                 Console.SetCursorPosition(59, 13);
                 Console.Write("\\\\\\YOU WIN///");
                 Console.SetCursorPosition(55, 14);
@@ -109,7 +113,12 @@ namespace SlimeQuest
             }
         }
 
-        static void InitializePlayer(Player player, string playerName)
+        /// <summary>
+        /// Initializes the player
+        /// </summary>
+        /// <param name="player"> The player class that holds all the players stats</param>
+        /// <param name="playerName"> Takes in the a name the player wants and names the player</param>
+        public static void InitializePlayer(Player player, string playerName)
         {
             player.Name = playerName;
             player.Health = 100;
@@ -155,103 +164,11 @@ namespace SlimeQuest
                 Console.Write("What would you like to name your new ally: ");
                 name = Console.ReadLine();
                 if (name.Length >= 3) { noName = false; }
-                ClearPlayerTextBox();
+                ScreenWindows.ClearPlayerTextBox();
                 Console.SetCursorPosition(27, 34);
                 Console.Write("Please use a name longer than 3 letters");
             }
             return name;
-        }
-
-        static void InitializeNewSlime(Slime slime, bool passive, Ally ally)
-        {
-            //A random system to handle the slime
-            Random random = new Random();
-            int slimeType = random.Next(1, 5);
-            int charmChance = random.Next(1, 10);
-
-            //Green Slime Builder
-            if (slimeType == 1)
-            {
-                slime.Health = 20;
-                slime.Damage = 2;
-                slime.Color = "green";
-                
-                if (charmChance < 5 && ally.Active)
-                {
-                    ally.Charm = Ally.Charms.GREENCHARM;
-                    slime.HasCharm = true;
-                }
-                else slime.HasCharm = false;
-            }
-            //Red Slime Builder
-            else if (slimeType == 2)
-            {
-                slime.Health = 20;
-                slime.Damage = 5;
-                slime.Color = "red";
-
-                if (charmChance < 5 && ally.Active)
-                {
-                    ally.Charm = Ally.Charms.REDCHARM;
-                    slime.HasCharm = true;
-                }
-                else slime.HasCharm = false;
-            }
-            //Blue Slime Builder
-            else if (slimeType == 3)
-            {
-                slime.Health = 30;
-                slime.Damage = 4;
-                slime.Color = "blue";
-
-                if (charmChance < 5 && ally.Active)
-                {
-                    ally.Charm = Ally.Charms.BLUECHARM;
-                    slime.HasCharm = true;
-                }
-                else slime.HasCharm = false;
-            }
-            //Pink Slime Builder
-            else if (slimeType == 4)
-            {
-                slime.Health = 45;
-                slime.Damage = 3;
-                slime.Color = "pink";
-
-                if (charmChance < 5 && ally.Active)
-                {
-                    ally.Charm = Ally.Charms.PINKCHARM;
-                    slime.HasCharm = true;
-                }
-                else slime.HasCharm = false;
-
-            }
-            //Pine Slime Builder
-            else
-            {
-                //just in case something goes wrong a slime is still initialized, although a weak one
-                slime.Health = 10;
-                slime.Damage = 1;
-                slime.Color = "pine";
-                slime.HasCharm = false;
-
-            }
-            //King Slime builder
-            if (slime.KingSlime)
-            {
-                slime.HasCharm = false;
-                slime.Health = 55;
-                slime.Damage = 10;
-                slime.Color = "purple";
-                //if (charmChance < 5 && ally.Active)
-                //{
-                //    ally.Charm = Ally.Charms.GREENCHARM;
-                //    slime.HasCharm = true;
-                //}
-                //else slime.HasCharm = false;
-            }
-
-
         }
         //-----------------------------Player Menu-------------------------------
 
@@ -263,8 +180,8 @@ namespace SlimeQuest
             // PLAYER MENU
             //
             Console.Clear();
-            DisplayGameScreen();
-            DisplayTextBoxPlayer();
+            ScreenWindows.DisplayGameScreen();
+            ScreenWindows.DisplayTextBoxPlayer();
             int action;
             Console.CursorVisible = true;
             Console.SetCursorPosition(29, 33);
@@ -351,7 +268,7 @@ namespace SlimeQuest
             // END PLAYER MENU
             //
             Console.CursorVisible = false;
-            ClearPlayerTextBox();
+            ScreenWindows.ClearPlayerTextBox();
             if (action == 1)
             {
                 damage = random.Next(player.Damage[0], player.Damage[1]);
@@ -385,9 +302,8 @@ namespace SlimeQuest
 
         static void SlimeATK(Player player, Slime slime)
         {
-
             //Setup
-            ClearPlayerTextBox();
+            ScreenWindows.ClearPlayerTextBox();
             Random random = new Random();
             int attack = random.Next(1, 2);
             int damage = 0;
@@ -433,15 +349,15 @@ namespace SlimeQuest
         {
 
             //Some setup
-            DisplayGameScreen();
-            DisplayTextBoxPlayer();
-            SlimeAndChatColor(slime);
-            DisplaySlime(slime);
+            ScreenWindows.DisplayGameScreen();
+            ScreenWindows.DisplayTextBoxPlayer();
+            ScreenWindows.SlimeAndChatColor(slime);
+            ScreenWindows.DisplaySlime(slime);
             Random random = new Random();
             int slimePassive = random.Next(1, 4);
             bool fight = false;
             //The chances to happen
-            ClearPlayerTextBox();
+            ScreenWindows.ClearPlayerTextBox();
             if (slimePassive == 1)
             {
                 Console.SetCursorPosition(27, 33);
@@ -471,7 +387,7 @@ namespace SlimeQuest
 
             }
             Thread.Sleep(2000);
-            ClearPlayerTextBox();
+            ScreenWindows.ClearPlayerTextBox();
             
             Console.SetCursorPosition(27, 31);
             Console.Write("Would you like to fight the slime minding its own buisness?");
@@ -485,7 +401,7 @@ namespace SlimeQuest
             Console.Write("Yes");
             Console.SetCursorPosition(33, 34);
             Console.Write("No");
-            DisplayTextBoxPlayer();
+            ScreenWindows.DisplayTextBoxPlayer();
             fight = true;
             Console.SetCursorPosition(29, 33);
             Console.Write("->");
@@ -522,7 +438,7 @@ namespace SlimeQuest
                 
 
             }
-            ClearPlayerTextBox();
+            ScreenWindows.ClearPlayerTextBox();
 
             Console.SetCursorPosition(27, 33);
             if (fight) { BattleLoop(player, slime, ally); }
@@ -534,13 +450,13 @@ namespace SlimeQuest
         //#------------------------------The actual game--------------------------
         static int GameLoop(Player player, Slime slime, Ally ally)
         {
-            DisplayTextBoxPlayer();
+            ScreenWindows.DisplayTextBoxPlayer();
             Random random = new Random();
             int end = 2;
 
             Console.Clear();
-            DisplayGameScreen();
-            DisplayTextBoxPlayer();
+            ScreenWindows.DisplayGameScreen();
+            ScreenWindows.DisplayTextBoxPlayer();
             int KingEncounter = 0;
             bool kingKilled = false;
             
@@ -560,8 +476,11 @@ namespace SlimeQuest
                     Console.Write("A slime Attacks!");
                     Thread.Sleep(1000);
                     
-                    InitializeNewSlime(slime, false,ally);
-                    DisplaySlime(slime);
+                    
+                   
+
+                    Slime.InitializeNewSlime(slime,ally);
+                    ScreenWindows.DisplaySlime(slime);
                     BattleLoop(player, slime, ally);
                     nothing = 0;
 
@@ -570,10 +489,10 @@ namespace SlimeQuest
                 {
 
                     Thread.Sleep(2000);
-                    InitializeNewSlime(slime, true, ally);
+                    Slime.InitializeNewSlime(slime, ally);
                     Console.Write($"You have spotted a {slime.Color} slime minding its own buisness");
                     Thread.Sleep(1000);
-                    DisplaySlime(slime);
+                    ScreenWindows.DisplaySlime(slime);
                     SlimePassive(player, slime, ally);
                     nothing = 0;
                 }
@@ -598,7 +517,7 @@ namespace SlimeQuest
                 }
                 if (KingEncounter > 20)
                 {
-                    ClearPlayerTextBox();
+                    ScreenWindows.ClearPlayerTextBox();
                     Console.SetCursorPosition(27, 33);
                     Console.Write("You feel an intense presense up ahead");
                     for (int dot = 0; dot < 4; dot++)
@@ -612,9 +531,10 @@ namespace SlimeQuest
                     Console.Write("a nearby pillar... you enter the room filled with");
                     Console.SetCursorPosition(27, 36);
                     Console.Write("a powerful presence.");
-                    DisplayContinuePrompt(103, 38);
+
+                    ScreenWindows.DisplayContinuePrompt(103, 38);
                     slime.KingSlime = true;
-                    InitializeNewSlime(slime, false, ally);
+                    Slime.InitializeNewSlime(slime, ally);
                     
                     BattleLoop(player, slime, ally);
                     kingKilled = true;
@@ -622,9 +542,9 @@ namespace SlimeQuest
                 }
                 KingEncounter++;
                 Thread.Sleep(2500);
-                ClearPlayerTextBox();
+                ScreenWindows.ClearPlayerTextBox();
                 Console.ForegroundColor = ConsoleColor.Gray;
-                ClearSlime();
+                ScreenWindows.ClearSlime();
             }
             return end;
         }
@@ -634,20 +554,20 @@ namespace SlimeQuest
             Random random = new Random();
             do
             {
-                ClearPlayerTextBox();
+                ScreenWindows.ClearPlayerTextBox();
                 if (slime.KingSlime)
                 {
-                    DisplayKingSlime();
+                    ScreenWindows.DisplayKingSlime();
                 }
                 else
                 {
-                    DisplaySlime(slime);
+                    ScreenWindows.DisplaySlime(slime);
                 }
-                SlimeAndChatColor(slime);
+                ScreenWindows.SlimeAndChatColor(slime);
 
                 Player(player, slime, ally);
                 Thread.Sleep(1000);
-                ClearPlayerTextBox();
+                ScreenWindows.ClearPlayerTextBox();
                 if (slime.Health > 0)
                 {
                     SlimeATK(player, slime);
@@ -656,9 +576,9 @@ namespace SlimeQuest
 
             } while ((player.Health > 0) && (slime.Health > 0));
 
-            
-            
-            ClearPlayerTextBox();
+
+
+            ScreenWindows.ClearPlayerTextBox();
             Console.ForegroundColor = ConsoleColor.Yellow;
             #region Gold and Experience
             int goldDrop;
@@ -753,34 +673,21 @@ namespace SlimeQuest
                         Thread.Sleep(99999999);
                         break;
                 }
-                
-                
-                DisplayContinuePrompt(103, 38);
-                ClearPlayerTextBox();
+
+
+                ScreenWindows.DisplayContinuePrompt(103, 38);
+                ScreenWindows.ClearPlayerTextBox();
 
             }
             Console.ForegroundColor = ConsoleColor.Gray;
             player.Gold = player.Gold + goldDrop;
-            DisplayContinuePrompt(103, 38);
-        }
-
-        /// <summary>
-        /// display continue prompt
-        /// </summary>
-        static void DisplayContinuePrompt(int across, int down)
-        {
-            Console.WriteLine();
-            Console.SetCursorPosition(across, down);
-            Console.CursorVisible = true;
-            Console.ReadKey();
-            Console.CursorVisible = false;
-            Console.SetCursorPosition(27, 33);
+            ScreenWindows.DisplayContinuePrompt(103, 38);
         }
 
         static int MainMenu(int playthegame)
         {
             #region CREATETITLE
-            DisplayTextboxMain();
+            ScreenWindows.DisplayTextboxMain();
             Console.SetCursorPosition(55, 12);
             Console.Write("-=|Slime Fighter|=-");
             Console.SetCursorPosition(59, 13);
@@ -836,128 +743,11 @@ namespace SlimeQuest
             return playthegame;
         }
 
-        /// <summary>
-        /// Displays the mainscreen textbox
-        /// </summary>
-        static void DisplayTextboxMain()
-        {
-            Console.Clear();
-            #region Main
-            //Across Top
-            Console.SetCursorPosition(34, 8);
-            Console.Write("+");
-            for (int i = 0; i < 30; i++)
-            {
-                Console.Write("=+");
-            }
-            //Down Left
-            int downwardPOS = 9;
-            for (int i = 0; i < 10; i++)
-            {
-                Console.SetCursorPosition(34, downwardPOS);
-                Console.WriteLine("|");
-                downwardPOS++;
-
-            }
-            //Down Right
-            downwardPOS = 9;
-            for (int i = 0; i < 10; i++)
-            {
-                Console.SetCursorPosition(94, downwardPOS);
-                Console.WriteLine("|");
-                downwardPOS++;
-
-            }
-            //Across Bottom
-            Console.SetCursorPosition(34, 19); //90  // 16
-            Console.Write("+");
-            for (int i = 0; i < 30; i++)
-            {
-                Console.Write("=+");
-            }
-            #endregion
-        }
-
-        static void DisplayTextBoxPlayer()
-        {
-            //top ONE
-            int down = 31;
-            Console.SetCursorPosition(25, 30);
-            Console.Write("+");
-            for (int i = 0; i < 40; i++)
-            {
-                Console.Write("=+");
-            }
-
-            //side left
-            for (int i = 0; i < 9; i++)
-            {
-                Console.SetCursorPosition(25, down);
-                Console.Write("|");
-                down++;
-            }
-            down = 31;
-            //Across bottom
-            Console.SetCursorPosition(25, 40);
-            Console.Write("+");
-            for (int i = 0; i < 40; i++)
-            {
-                Console.Write("=+");
-            }
-
-            for (int i = 0; i < 9; i++)
-            {
-                Console.SetCursorPosition(105, down);
-                Console.Write("|");
-                down++;
-            }
-        }
-
-        static void DisplayGameScreen()
-        {
-
-            #region CREATETITLE
-            //     ================TOP===========================
-            Console.SetCursorPosition(34, 8);
-            Console.Write("+");
-            for (int i = 0; i < 30; i++)
-            {
-                Console.Write("=+");
-            }
-            //=========================LEFT============================
-            int downwardPOS = 9;
-            for (int i = 0; i < 19; i++)
-            {
-                Console.SetCursorPosition(34, downwardPOS);
-                Console.WriteLine("|");
-                downwardPOS++;
-
-            }
-            //=========================RIGHT============================
-            downwardPOS = 9;
-            for (int i = 0; i < 19; i++)
-            {
-                Console.SetCursorPosition(94, downwardPOS);
-                Console.WriteLine("|");
-                downwardPOS++;
-
-            }
-            //=========================BOTTOM============================
-            Console.SetCursorPosition(34, 27);
-            Console.Write("+");
-            for (int i = 0; i < 30; i++)
-            {
-                Console.Write("=+");
-            }
-
-            #endregion
-        }
-
         static void LevelUp(Player player)
         {
             Console.Clear();
-            DisplayGameScreen();
-            DisplayTextBoxPlayer();
+            ScreenWindows.DisplayGameScreen();
+            ScreenWindows.DisplayTextBoxPlayer();
             Console.CursorVisible = false;
             Console.SetCursorPosition(44,10);
             Console.Write("Health : " + player.MaxHealth);// left 54 for end || 57 for + 59 for health
@@ -975,7 +765,8 @@ namespace SlimeQuest
             Random random = new Random();
             int action;
             //Origin of tOb is unknown but now im calling it tOb as a reference to a tab. It works so shhhhh
-            //
+            
+
             //Cursors current position
             int tOb = 10;
             //cursors last position
@@ -1140,140 +931,9 @@ namespace SlimeQuest
             player.Damage[0] = player.Damage[0] + damage;
         }
 
-        static private void DisplaySlime(Slime slime)
-        {
-            SlimeAndChatColor(slime);
-            Console.SetCursorPosition(35, 16);
-            Console.Write("                      =======                             ");
-            Console.SetCursorPosition(35, 17);
-            Console.Write("                  ====       ====                         ");
-            Console.SetCursorPosition(35, 18);
-            Console.Write("               ===              ===                       ");
-            Console.SetCursorPosition(35, 19);
-            Console.Write("             ==     v       v     ==                      ");
-            Console.SetCursorPosition(35, 20);
-            Console.Write("           ===     (6)     (9)     ===                    ");
-            Console.SetCursorPosition(35, 21);
-            Console.Write("          ===       ^       ^       ===                   ");
-            Console.SetCursorPosition(35, 22);
-            Console.Write("         ====                       ====                  ");
-            Console.SetCursorPosition(35, 23);
-            Console.Write("          ===                       ===                   ");
-            Console.SetCursorPosition(35, 24);
-            Console.Write("            ====-               -====                     ");
-            Console.SetCursorPosition(35, 25);
-            Console.Write("                 ==============                           ");
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
+       
 
-        static private void DisplayKingSlime()
-        {
 
-            Console.Write("                   __    _    __                          ");
-            Console.SetCursorPosition(35, 14);
-            Console.Write("                   |  \\_/ \\_/  |                         ");
-            Console.SetCursorPosition(35, 15);
-            Console.Write("                   +++++++++++++                          ");
-            Console.SetCursorPosition(35, 16);
-            Console.Write("                      =======                             ");
-            Console.SetCursorPosition(35, 17);
-            Console.Write("                  ====       ====                         ");
-            Console.SetCursorPosition(35, 18);
-            Console.Write("               ===              ===                       ");
-            Console.SetCursorPosition(35, 19);
-            Console.Write("             ==     v       v     ==                      ");
-            Console.SetCursorPosition(35, 20);
-            Console.Write("           ===     (6)     (9)     ===                    ");
-            Console.SetCursorPosition(35, 21);
-            Console.Write("          ===       ^       ^       ===                   ");
-            Console.SetCursorPosition(35, 22);
-            Console.Write("         ====                       ====                  ");
-            Console.SetCursorPosition(35, 23);
-            Console.Write("          ===                       ===                   ");
-            Console.SetCursorPosition(35, 24);
-            Console.Write("            ====-               -====                     ");
-            Console.SetCursorPosition(35, 25);
-            Console.Write("                 ==============                           ");
-
-        }
-
-        static private void ClearPlayerTextBox()
-        {
-            Console.SetCursorPosition(26, 31);
-            Console.WriteLine("                                                                             ");
-            Console.SetCursorPosition(26, 32);
-            Console.WriteLine("                                                                             ");
-            Console.SetCursorPosition(26, 33);
-            Console.WriteLine("                                                                             ");
-            Console.SetCursorPosition(26, 34);
-            Console.WriteLine("                                                                             ");
-            Console.SetCursorPosition(26, 35);
-            Console.WriteLine("                                                                             ");
-            Console.SetCursorPosition(26, 36);
-            Console.WriteLine("                                                                             ");
-            Console.SetCursorPosition(26, 37);
-            Console.WriteLine("                                                                             ");
-
-        }
-
-        static void SlimeAndChatColor(Slime slime)
-        {
-            if (slime.Color == "green")
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-            }
-            else if (slime.Color == "red")
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            else if (slime.Color == "blue")
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-            }
-            else if (slime.Color == "pink")
-            {
-                Console.ForegroundColor = ConsoleColor.Magenta;
-            }
-            else if (slime.Color == "purple")
-            {
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            }
-            else if (slime.Color == "pine")
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-            }
-        }
-
-        static private void ClearSlime()
-        {
-
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 14);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 15);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 16);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 17);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 18);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 19);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 20);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 21);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 22);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 23);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 24);
-            Console.Write("                                                          ");
-            Console.SetCursorPosition(35, 25);
-            Console.Write("                                                          ");
-
-        }
 
     }
 }

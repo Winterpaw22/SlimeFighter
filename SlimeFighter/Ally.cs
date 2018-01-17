@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SlimeQuest
 {
-    class Ally
+    public class Ally
     {
 
         #region Call Names

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SlimeQuest
 {
-    class Player
+    public class Player
     {
         private string _name;
         private int _health;
@@ -63,9 +63,24 @@ namespace SlimeQuest
             get { return _exp; }
             set { _exp = value; }
         }
-
-
-
         #endregion
+
+
+        /// <summary>
+        /// Initializes the player
+        /// </summary>
+        /// <param name="player"> The player class that holds all the players stats</param>
+        /// <param name="playerName"> Takes in the a name the player wants and names the player</param>
+        public static void InitializePlayer(Player player, string playerName)
+        {
+            player.Name = playerName;
+            player.Health = 100;
+            player.MaxHealth = 100;
+            player.Defense = 5;
+            player.Damage = new int[2];
+            player.Damage[0] = 1;
+            player.Damage[1] = 7;
+            player.Experience = 0;
+        }
     }
 }
